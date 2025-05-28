@@ -128,30 +128,33 @@ Tabele:
 7. TrainingPlans
 | Pole          | Typ                        | Opis                                     |
 | ------------- | -------------------------- | ---------------------------------------- |
-| id            | SERIAL PRIMARY KEY         | Id zapisu                                |
+| id            | SERIAL PRIMARY KEY         | Id planu treningowego                    |
 | user_id       | INT REFERENCES Users(id)   | Użytkownik (CLIENT)                      |
 | created_by    | INT REFERENCES Users(id)   | Osoba tworząca plan treningowy           |
 | created_at    | TIMESTAMP                  | Data zapisu                              |
 | is_active     | BOOLEAN                    | Czy nadal jest używany przez użytkownika |
 
 8. Workouts
-| Pole          | Typ                        | Opis                                     |
-| ------------- | -------------------------- | ---------------------------------------- |
-| id            | SERIAL PRIMARY KEY         | Id zapisu                                |
-| user_id       | INT REFERENCES Users(id)   | Użytkownik (CLIENT)                      |
-| created_by    | INT REFERENCES Users(id)   | Osoba tworząca plan treningu             |
-| created_at    | TIMESTAMP                  | Data zapisu                              |
-| is_active     | BOOLEAN                    | Czy nadal jest używany przez użytkownika |
+| Pole            | Typ                              | Opis                                     |
+| --------------- | -------------------------------- | ---------------------------------------- |
+| id              | SERIAL PRIMARY KEY               | Id treningu                              |
+| user_id         | INT REFERENCES Users(id)         | Użytkownik (CLIENT)                      |
+| trainingplan_id | INT REFERENCES TrainingPlans(id) | Id planu treningowego                    |
+| created_by      | INT REFERENCES Users(id)         | Osoba tworząca plan treningu             |
+| created_at      | TIMESTAMP                        | Data zapisu                              |
+| is_active       | BOOLEAN                          | Czy nadal jest używany przez użytkownika |
 
 9.ExerciseIcons:
+| Pole          | Typ                                | Opis                                     |
 | ------------- | ---------------------------------- | ---------------------------------------- |
 | id            | SERIAL PRIMARY KEY                 | Id ikonki                                |
 | name          | VARCHAR(50)                        | Nazwa ikonki                             |
 | avatar        | BYTEA                              | Ikonka do ćwiczenia                      |
 
-9. Exercises:
+10. Exercises:
+| Pole           | Typ                                | Opis                                     |
 | -------------  | ---------------------------------- | ---------------------------------------- |
-| id             | SERIAL PRIMARY KEY                 | Id zapisu                                |
+| id             | SERIAL PRIMARY KEY                 | Id ćwiczenia                             |
 | name           | VARCHAR(100)                       | Nazwa                                    |
 | user_id        | INT REFERENCES Users(id)           | Użytkownik (CLIENT)                      |
 | created_by     | INT REFERENCES Users(id)           | Osoba tworząca plan                      |
@@ -159,16 +162,35 @@ Tabele:
 | is_active      | BOOLEAN                            | Czy nadal jest używany przez użytkownika |
 | icon_id        | INT REFERENCES ExerciseIcons(id)   | Ikonka przypisana do ćwiczenia           |
 
+11. Sets:
+| Pole           | Typ                                | Opis                                     |
+| -------------  | ---------------------------------- | ---------------------------------------- |
+| id             | SERIAL PRIMARY KEY                 | Id setu treningowego                     |
+| exercise_id    | INT REFERENCES Exercise(id)        | Id ćwiczenia                             |
+| workout_id     | INT REFERENCES Workout(id)         | Id treningu                              |
+| number_of_sets | INT                                | Liczba setów                             |
 
-10. TrainingLogs
-| Pole     | Typ                      | Opis          |
-| -------- | ------------------------ | ------------- |
-| id       | SERIAL PRIMARY KEY       | Id wpisu      |
-| user_id  | INT REFERENCES Users(id) | Id klienta    |
-| date     | DATE                     | Data treningu |
-| content  | TEXT                     | Opis treningu |
+12.ExerciseSets:
+| Pole                 | Typ                                | Opis                                     |
+| -------------------- | ---------------------------------- | ---------------------------------------- |
+| id                   | SERIAL PRIMARY KEY                 | Id setu treningowego                     |
+| set_id               | INT REFERENCES Exercise(id)        | Id ćwiczenia                             |
+| workout_id           | INT REFERENCES Workout(id)         | Id treningu                              |
+| number_of_reps       | INT                                | Liczba setów                             |
+| weight               | INT                                | Ciężar w kg                              |
+| time                 | TIMESTAMP                          | Czas dla ćwiczeń czasowych               |
 
-11. Announcements
+
+13. TrainingLogs
+| Pole       | Typ                         | Opis                                                                               |
+| ---------- | --------------------------- | ---------------------------------------------------------------------------------- |
+| id         | SERIAL PRIMARY KEY          | Id wpisu                                                                           |
+| user_id    | INT REFERENCES Users(id)    | Id klienta                                                                         |
+| date       | DATE                        | Data treningu                                                                      |
+| workout_id | INT REFERENCES Workouts(id) | Id treningu                                                                        |
+| content    | JSON                        | Przechowywane są wszystkie zmiany powtórzeń i ciężaru względem to domyślnego planu |
+
+14. Announcements
 | Pole         | Typ                         | Opis                               |
 | ------------ | --------------------------- | ---------------------------------- |
 | id           | SERIAL PRIMARY KEY          | Id ogłoszenia                      |
@@ -179,7 +201,7 @@ Tabele:
 | created_by   | INT REFERENCES Users(id)    | Data dodania                       |
 | is_active    | BOOLEAN                     | Czy ogłoszenie jest aktualne       |
 
-12. GymInfo (single record)
+15. GymInfo (single record)
 | Pole                 | Typ                      | Opis                    |
 | -------------------- | ------------------------ | ----------------------- |
 | id                   | SERIAL PRIMARY KEY       | Stałe ID (np. 1)        |
