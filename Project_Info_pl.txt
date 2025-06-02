@@ -10,6 +10,8 @@ Aplikacja ma na celu wspomaganie właścicieli siłowni w zarządzaniu siłowni�
 sieci obejmujących wiele siłowni. Na stronie głównej pracownicy mogą umieszczać aktualności oraz ogłoszenia jak i informacje takie jak godziny otwarcia. W oddzielnej stronie 
 znajduje się cennik ofert zawierający m.in. różne karnety i zajęcia indywidualne czy grupowe. Każdy zalogowany użytkownik siłowni (rola Klient) w zakładce Plany treningowe ma 
 rozpisane swoje plany trenigowe przypisane przez trenerea jak i może stworzyć swój własny plan treningowy. 
+Administrator ma dostęp do panelu administratora w którym może dodawać i usuwać konta oraz zarządzać wszystkimi informacjami zawartymi na stronie
+Użytkownik z rolą Pracownik Siłowni może aktualizować dane na stronie głównej siłowni, dodawać nowe oferty oraz zajęcia
 
 Rodzaje kont w aplikacji:
 - Administrator
@@ -52,17 +54,15 @@ Tabele:
 | ------------------- | ------------------------------------- | ----------------------------------------------------------- |
 | id                  | SERIAL PRIMARY KEY                    | Unikalny identyfikator użytkownika                          |
 | email               | VARCHAR(255) UNIQUE                   | Email użytkownika                                           |
-| phone_country_code  | VARCHAR(3)                            | Numer kierunkowy dla kraju                                  |
-| mobile_phone_number | VARCHAR(9)                            | Numer telefonu komórkowego (bez prefiksu)                   |
+| phone_number        | VARCHAR(15)                           | Numer telefonu komórkowego                                  |
 | password_hash       | VARCHAR(255)                          | Zahashowane hasło                                           |
-| first_name          | VARCHAR(100)                          | Imię                                                        |
-| last_name           | VARCHAR(100)                          | Nazwisko                                                    |
+| first_name          | VARCHAR(25)                           | Imię                                                        |
+| last_name           | VARCHAR(50)                           | Nazwisko                                                    |
 | role                | ENUM('ADMIN', 'EMPLOYEE', 'CLIENT')   | Rola użytkownika (bez gościa)                               |
 | created_at          | TIMESTAMP                             | Data rejestracji                                            |
 | last_logged_in_date | TIMESTAMP                             | Data ostatniego logowania                                   |
 | is_google           | BOOLEAN                               | Czy konto założone przez konto google                       |
 | discount            | ENUM('NONE', 'STUDENT', 'MULTISPORT') | Czy przysługuje jakaś zniżka                                |
-| google_id           | VARCHAR(255) UNIQUE                   | GoogleID                                                    |
 | ad_agreement        | BOOLEAN                               | Czy osoba zgodziła się na wysyłanie reklam na maila/telefon |
 | is_active           | BOOLEAN                               | Czy konto jest aktywne                                      |
 | avatar              | BYTEA                                 | Awatar użytkownika                                          |
@@ -74,7 +74,7 @@ Tabele:
 | name               | VARCHAR(100)            | Nazwa oferty                                                                                                 |
 | description        | TEXT                    | Opis                                                                                                         |
 | price_text         | VARCHAR(100)            | Cena Opisowo np. 120zł/miesiąc                                                                               |
-| price              | DECIMAL(10, 2)          | Cena (w przeliczeniu na jedno wejście/dzień karnetu/jedne zajęcia/inną pojedynczą jednostkę liczenia oferty) |
+| price              | MONEY                   | Cena (w przeliczeniu na jedno wejście/dzień karnetu/jedne zajęcia/inną pojedynczą jednostkę liczenia oferty) |
 | duration_days      | INT                     | Długość trwania w dniach                                                                                     |
 | is_permanent       | BOOLEAN                 | Czy oferta jest stała (odróżnienie stałych ofert i limitowanych)                                             |
 | offer_expired_date | TIMESTAMP               | Data kiedy oferta traci ważność (dla limitowanych ofert)                                                     |
@@ -83,15 +83,15 @@ Tabele:
 | is_active          | BOOLEAN                 | Czy oferta jest aktualna                                                                                     |
 
 3. Classes
-| Pole           | Typ                      | Opis                       |
-| -------------- | ------------------------ | -------------------------- |
-| id             | SERIAL PRIMARY KEY       | Id zajęć                   |
-| offer_id       | INT REFERENCES Offers(id)| Id oferty zajęć            |
-| description    | TEXT                     | Opis                       |
-| start_time     | TIMESTAMP                | Data i godzina rozpoczęcia |
-| end_time       | TIMESTAMP                | Data i godzina zakończenia |
-| instructor_id  | INT REFERENCES Users(id) | Prowadzący (EMPLOYEE)      |
-| capacity       | INT                      | Maks. liczba uczestników   |
+| Pole                | Typ                      | Opis                       |
+| ------------------- | ------------------------ | -------------------------- |
+| id                  | SERIAL PRIMARY KEY       | Id zajęć                   |
+| offer_id            | INT REFERENCES Offers(id)| Id oferty zajęć            |
+| description         | TEXT                     | Opis                       |
+| start_time          | TIMESTAMP                | Data i godzina rozpoczęcia |
+| end_time            | TIMESTAMP                | Data i godzina zakończenia |
+| instructor_id       | INT REFERENCES Users(id) | Prowadzący (EMPLOYEE)      |
+| capacity            | SMALLINT                 | Maks. liczba uczestników   |
 
 
 4. ClassRegistrations
@@ -117,11 +117,10 @@ Tabele:
 | Pole                | Typ                         | Opis                                      |
 | ------------------- | --------------------------- | ----------------------------------------- |
 | id                  | SERIAL PRIMARY KEY          | Id działania                              |
-| first_name          | VARCHAR(100)                | Imię                                      |
-| last_name           | VARCHAR(100)                | Nazwisko                                  |
+| first_name          | VARCHAR(25)                 | Imię                                      |
+| last_name           | VARCHAR(50)                 | Nazwisko                                  |
 | email               | VARCHAR(255)                | Email podany przez gościa                 |
-| phone_country_code  | VARCHAR(3)                  | Numer kierunkowy dla kraju                |
-| mobile_phone_number | VARCHAR(9)                  | Numer telefonu komórkowego (bez prefiksu) |
+| phone_number        | VARCHAR(15)                 | Numer telefonu komórkowego                |
 | purchase_id         | INT REFERENCES Purchase(id) | ID zakupu                                 |
 | created_at          | TIMESTAMP                   | Data zakupu                               |
 
@@ -132,7 +131,6 @@ Tabele:
 | user_id       | INT REFERENCES Users(id)   | Użytkownik (CLIENT)                      |
 | created_by    | INT REFERENCES Users(id)   | Osoba tworząca plan treningowy           |
 | created_at    | TIMESTAMP                  | Data zapisu                              |
-| is_active     | BOOLEAN                    | Czy nadal jest używany przez użytkownika |
 
 8. Workouts
 | Pole            | Typ                              | Opis                                     |
@@ -142,7 +140,6 @@ Tabele:
 | trainingplan_id | INT REFERENCES TrainingPlans(id) | Id planu treningowego                    |
 | created_by      | INT REFERENCES Users(id)         | Osoba tworząca plan treningu             |
 | created_at      | TIMESTAMP                        | Data zapisu                              |
-| is_active       | BOOLEAN                          | Czy nadal jest używany przez użytkownika |
 
 9.ExerciseIcons:
 | Pole          | Typ                                | Opis                                     |
@@ -159,7 +156,6 @@ Tabele:
 | user_id        | INT REFERENCES Users(id)           | Użytkownik (CLIENT)                      |
 | created_by     | INT REFERENCES Users(id)           | Osoba tworząca plan                      |
 | created_at     | TIMESTAMP                          | Data zapisu                              |
-| is_active      | BOOLEAN                            | Czy nadal jest używany przez użytkownika |
 | icon_id        | INT REFERENCES ExerciseIcons(id)   | Ikonka przypisana do ćwiczenia           |
 
 11. Sets:
@@ -168,7 +164,7 @@ Tabele:
 | id             | SERIAL PRIMARY KEY                 | Id setu treningowego                     |
 | exercise_id    | INT REFERENCES Exercise(id)        | Id ćwiczenia                             |
 | workout_id     | INT REFERENCES Workout(id)         | Id treningu                              |
-| number_of_sets | INT                                | Liczba setów                             |
+| number_of_sets | SMALLINT                           | Liczba setów                             |
 
 12.ExerciseSets:
 | Pole                 | Typ                                | Opis                                     |
@@ -176,19 +172,19 @@ Tabele:
 | id                   | SERIAL PRIMARY KEY                 | Id setu treningowego                     |
 | set_id               | INT REFERENCES Exercise(id)        | Id ćwiczenia                             |
 | workout_id           | INT REFERENCES Workout(id)         | Id treningu                              |
-| number_of_reps       | INT                                | Liczba setów                             |
-| weight               | INT                                | Ciężar w kg                              |
-| time                 | TIMESTAMP                          | Czas dla ćwiczeń czasowych               |
+| number_of_reps       | SMALLINT                           | Liczba setów                             |
+| weight               | SMALLINT                           | Ciężar w kg                              |
+| duration             | INTERVAL                           | Czas dla ćwiczeń czasowych               |
 
 
 13. TrainingLogs
-| Pole       | Typ                         | Opis                                                                               |
-| ---------- | --------------------------- | ---------------------------------------------------------------------------------- |
-| id         | SERIAL PRIMARY KEY          | Id wpisu                                                                           |
-| user_id    | INT REFERENCES Users(id)    | Id klienta                                                                         |
-| date       | DATE                        | Data treningu                                                                      |
-| workout_id | INT REFERENCES Workouts(id) | Id treningu                                                                        |
-| content    | JSON                        | Przechowywane są wszystkie zmiany powtórzeń i ciężaru względem to domyślnego planu |
+| Pole          | Typ                         | Opis                                                                               |
+| ------------- | --------------------------- | ---------------------------------------------------------------------------------- |
+| id            | SERIAL PRIMARY KEY          | Id wpisu                                                                           |
+| user_id       | INT REFERENCES Users(id)    | Id klienta                                                                         |
+| training_date | TIMESTAMP                   | Data treningu                                                                      |
+| workout_id    | INT REFERENCES Workouts(id) | Id treningu                                                                        |
+| content       | JSON                        | Przechowywane są wszystkie zmiany powtórzeń i ciężaru względem to domyślnego planu |
 
 14. Announcements
 | Pole         | Typ                         | Opis                               |
@@ -207,10 +203,8 @@ Tabele:
 | id                   | SERIAL PRIMARY KEY       | Stałe ID (np. 1)        |
 | opening_hours        | TEXT                     | Godziny otwarcia        |
 | description          | TEXT                     | Opis na stronie głównej |
-| phone_country_code_1 | VARCHAR(3)               | Kierunkowy telefonu 1   |
-| phone_number_1       | CHAR(9)                  | Numer kontaktowy 1      |
-| phone_country_code_2 | VARCHAR(3)               | Kierunkowy telefonu 2   |
-| phone_number_2       | CHAR(9)                  | Numer kontaktowy 2      |
+| phone_number_1       | VARCHAR(15)              | Numer kontaktowy 1      |
+| phone_number_2       | VARCHAR(15)              | Numer kontaktowy 2      |
 | email_1              | VARCHAR(255)             | adres_mailowy 1         |
 | email_2              | VARCHAR(255)             | adres_mailowy 2         |
 | updated_by           | INT REFERENCES Users(id) | Kto zmodyfikował        |
