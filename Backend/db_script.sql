@@ -1,7 +1,5 @@
--- Ustawienie ENUM dla ról użytkowników
+-- Enum Types
 CREATE TYPE user_roles AS ENUM ('ADMIN', 'EMPLOYEE', 'CLIENT');
-
---Ustawienie ENUM dla zniżek użytkowników
 CREATE TYPE user_discounts AS ENUM('NONE', 'STUDENT', 'MULTISPORT');
 
 -- Tabela: Users
@@ -53,7 +51,8 @@ CREATE TABLE ClassRegistrations (
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE,
     class_id INTEGER REFERENCES Classes(id) ON DELETE CASCADE,
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    UNIQUE(user_id, class_id) -- Prevent double bookings
 );
 
 -- Tabela: Purchases
@@ -88,7 +87,7 @@ CREATE TABLE TrainingPlans (
 CREATE TABLE Workouts (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) NOT NULL ON DELETE CASCADE,
-    trainingplan_id INTEGER REFERENCES TrainingPlans(id) NOT NULL ON DELETE CASCADE,
+    training_plan_id INTEGER REFERENCES TrainingPlans(id) NOT NULL ON DELETE CASCADE,
     created_by INTEGER REFERENCES Users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -147,7 +146,7 @@ CREATE TABLE Announcements (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Tabela: GymInfo (tylko jeden rekord domyślnie)
+-- Tabela: GymInfo (singleton)
 CREATE TABLE GymInfo (
     id SERIAL PRIMARY KEY,
     opening_hours TEXT,
