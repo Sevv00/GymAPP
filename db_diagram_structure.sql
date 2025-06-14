@@ -1,4 +1,4 @@
-Project GymManagement {
+Project GymApp {
   database_type: 'PostgreSQL'
 }
 
