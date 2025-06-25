@@ -24,9 +24,9 @@ CREATE TABLE Users (
 CREATE TABLE Offers (
     id SERIAL PRIMARY KEY,
     offer_name VARCHAR(100) NOT NULL,
-    descrpt TEXT,
+    offer_desc TEXT,
     price_text VARCHAR(100),
-    price MONEY NOT NULL,
+    price NUMERIC NOT NULL,
     duration_days SMALLINT NOT NULL,
     is_permanent BOOLEAN NOT NULL,
     offer_expired_date TIMESTAMP,
