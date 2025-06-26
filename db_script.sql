@@ -26,7 +26,7 @@ CREATE TABLE Offers (
     offer_name VARCHAR(100) NOT NULL,
     offer_desc TEXT,
     price_text VARCHAR(100),
-    price NUMERIC NOT NULL,
+    price NUMERIC(7,2) NOT NULL,
     duration_days SMALLINT NOT NULL,
     is_permanent BOOLEAN NOT NULL,
     offer_expired_date TIMESTAMP,
