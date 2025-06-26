@@ -200,7 +200,7 @@ Tabele:
 | -------------------- | ------------------------ | ----------------------- |
 | id                   | SERIAL PRIMARY KEY       | Stałe ID (np. 1)        |
 | opening_hours        | TEXT                     | Godziny otwarcia        |
-| descrpt              | TEXT                     | Opis na stronie głównej |
+| gym_desc             | TEXT                     | Opis na stronie głównej |
 | phone_number_1       | VARCHAR(15)              | Numer kontaktowy 1      |
 | phone_number_2       | VARCHAR(15)              | Numer kontaktowy 2      |
 | email_1              | VARCHAR(255)             | adres_mailowy 1         |

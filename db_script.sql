@@ -2,7 +2,7 @@
 CREATE TYPE user_roles AS ENUM ('ADMIN', 'EMPLOYEE', 'CLIENT');
 CREATE TYPE user_discounts AS ENUM('NONE', 'STUDENT', 'MULTISPORT');
 
--- Tabela: Users
+-- Table: Users
 CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE Users (
     avatar BYTEA
 );
 
--- Tabela: Offers
+-- Table: Offers
 CREATE TABLE Offers (
     id SERIAL PRIMARY KEY,
     offer_name VARCHAR(100) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE Offers (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Tabela: Classes
+-- Table: Classes
 CREATE TABLE Classes (
     id SERIAL PRIMARY KEY,
     offer_id INTEGER REFERENCES Offers(id) ON DELETE CASCADE,
@@ -45,7 +45,7 @@ CREATE TABLE Classes (
     capacity INTEGER NOT NULL
 );
 
--- Tabela: ClassRegistrations
+-- Table: ClassRegistrations
 CREATE TABLE ClassRegistrations (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE,
@@ -55,7 +55,7 @@ CREATE TABLE ClassRegistrations (
     UNIQUE(user_id, class_id) -- Prevent double bookings
 );
 
--- Tabela: Purchases
+-- Table: Purchases
 CREATE TABLE Purchases (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) ON DELETE SET NULL,
@@ -64,7 +64,7 @@ CREATE TABLE Purchases (
     valid_until TIMESTAMP
 );
 
--- Tabela: GuestActions
+-- Table: GuestActions
 CREATE TABLE GuestActions (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(25),
@@ -75,7 +75,7 @@ CREATE TABLE GuestActions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela: TrainingPlans
+-- Table: TrainingPlans
 CREATE TABLE TrainingPlans (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) NOT NULL ON DELETE CASCADE,
@@ -83,7 +83,7 @@ CREATE TABLE TrainingPlans (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela: Workouts
+-- Table: Workouts
 CREATE TABLE Workouts (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) NOT NULL ON DELETE CASCADE,
@@ -92,14 +92,14 @@ CREATE TABLE Workouts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela: ExerciseIcons
+-- Table: ExerciseIcons
 CREATE TABLE ExerciseIcons (
     id SERIAL PRIMARY KEY,
     icon_name VARCHAR(50),
     avatar BYTEA
 );
 
--- Tabela: Exercises
+-- Table: Exercises
 CREATE TABLE Exercises (
     id SERIAL PRIMARY KEY,
     exercise_name VARCHAR(100) NOT NULL,
@@ -109,7 +109,7 @@ CREATE TABLE Exercises (
     icon_id INTEGER REFERENCES ExerciseIcons(id) ON DELETE SET NULL
 );
 
--- Tabela: ExerciseSetNumbers
+-- Table: ExerciseSetNumbers
 CREATE TABLE ExerciseSetNumbers (
     id SERIAL PRIMARY KEY,
     exercise_id INTEGER REFERENCES Exercises(id) NOT NULL ON DELETE CASCADE,
@@ -117,7 +117,7 @@ CREATE TABLE ExerciseSetNumbers (
     number_of_sets SMALLINT
 );
 
--- Tabela: ExerciseSets
+-- Table: ExerciseSets
 CREATE TABLE ExerciseSets (
     id SERIAL PRIMARY KEY,
     set_id INTEGER REFERENCES ExerciseSetNumbers(id) NOT NULL ON DELETE CASCADE,
@@ -127,7 +127,7 @@ CREATE TABLE ExerciseSets (
     duration INTERVAL 
 );
 
--- Tabela: TrainingLogs
+-- Table: TrainingLogs
 CREATE TABLE TrainingLogs (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES Users(id) ON DELETE CASCADE,
@@ -136,7 +136,7 @@ CREATE TABLE TrainingLogs (
     content JSON
 );
 
--- Tabela: Announcements
+-- Table: Announcements
 CREATE TABLE Announcements (
     id SERIAL PRIMARY KEY,
     employee_id INTEGER REFERENCES Users(id) ON DELETE SET NULL,
@@ -146,11 +146,11 @@ CREATE TABLE Announcements (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Tabela: GymInfo (singleton)
+-- Table: GymInfo (singleton)
 CREATE TABLE GymInfo (
     id SERIAL PRIMARY KEY,
     opening_hours TEXT,
-    descrpt TEXT,
+    gym_desc TEXT,
     phone_number_1 VARCHAR(15) NOT NULL,
     phone_number_2 VARCHAR(15),
     email_1 VARCHAR(255) NOT NULL,
