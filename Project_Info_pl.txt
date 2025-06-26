@@ -74,7 +74,7 @@ Tabele:
 | offer_name         | VARCHAR(100)            | Nazwa oferty                                                                                                 |
 | offer_desc         | TEXT                    | Opis                                                                                                         |
 | price_text         | VARCHAR(100)            | Cena Opisowo np. 120zł/miesiąc                                                                               |
-| price              | NUMERIC(7,2)            | Cena (w przeliczeniu na jedno wejście/dzień karnetu/jedne zajęcia/inną pojedynczą jednostkę liczenia oferty) |
+| price              | NUMERIC(10,2)           | Cena (w przeliczeniu na jedno wejście/dzień karnetu/jedne zajęcia/inną pojedynczą jednostkę liczenia oferty) |
 | duration_days      | INT                     | Długość trwania w dniach                                                                                     |
 | is_permanent       | BOOLEAN                 | Czy oferta jest stała (odróżnienie stałych ofert i limitowanych)                                             |
 | offer_expired_date | TIMESTAMP               | Data kiedy oferta traci ważność (dla limitowanych ofert)                                                     |
